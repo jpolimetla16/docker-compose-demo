@@ -1,0 +1,36 @@
+version: "3.8"
+services:
+  mysqldb:
+   container_name: mysqldb
+   image: mysql
+   volumes:
+    - mysqldata:/var/lib/mysql
+   ports:
+    - 3307:3306
+   networks:
+    spring-boot-network:  
+   environment:
+    - MYSQL_ROOT_PASSWORD=admin
+    - MYSQL_DATABASE=testdb
+  spring-boot-app:
+   container_name: app-server
+   image: spring-boot-app
+   build: .
+   ports:
+    - 8181:8181
+   networks:
+    spring-boot-network: 
+   environment:
+    - MYSQL_HOST=mysqldb
+    - MYSQL_PORT=3306
+    - MYSQL_USERNAME=root
+    - MYSQL_PASSWORD=admin
+   depends_on: ["mysqldb"]  
+    
+volumes:
+  mysqldata:
+networks:
+ spring-boot-network:
+  external: true
+  
+  
